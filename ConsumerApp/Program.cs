@@ -1,21 +1,31 @@
 using Confluent.Kafka;
-using kafka_test.Services;
+using ConsumerApp.Models;
+using ConsumerApp.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 
-var producerConfiguration = new ProducerConfig();
-builder.Configuration.Bind("producerconfiguration", producerConfiguration);
-builder.Services.AddSingleton<ProducerConfig>(producerConfiguration);
 
-builder.Services.AddTransient<IProducerServices, ProducerServices>();
+var consumerConfig = new ConsumerConfig();
+builder.Configuration.Bind("consumer", consumerConfig);
+builder.Services.AddSingleton<ConsumerConfig>(consumerConfig);
+
+builder.Services.AddTransient<IConsumerService, ConsumerService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+var Connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(Connection)
+);
+
 
 var app = builder.Build();
 

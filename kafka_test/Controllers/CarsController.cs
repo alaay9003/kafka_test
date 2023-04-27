@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using kafka_test.Models;
+using kafka_test.Services;
 
 namespace kafka_test.Controllers
 {
@@ -11,26 +12,49 @@ namespace kafka_test.Controllers
     [ApiController]
     public class CarsController : ControllerBase
     {
-        private ProducerConfig _configuration;
-        private readonly IConfiguration _config;
-        public CarsController(ProducerConfig configuration, IConfiguration config)
+        private readonly IProducerServices _producer;
+        public CarsController(IProducerServices producer)
         {
-            _configuration = configuration;
-            _config = config;
+            _producer = producer;
         }
-        [HttpPost("sendBookingDetails")]
-        public async Task<ActionResult> Get([FromBody] CarDetails employee)
+
+        [HttpPost]
+        public async Task<ActionResult> Get([FromBody] CarDetails car)
         {
-            string serializedData = JsonConvert.SerializeObject(employee);
-
-            var topic = _config.GetSection("TopicName").Value;
-
-            using (var producer = new ProducerBuilder<Null, string>(_configuration).Build())
-            {
-                await producer.ProduceAsync(topic, new Message<Null, string> { Value = serializedData });
-                producer.Flush(TimeSpan.FromSeconds(10));
-                return Ok(true);
-            }
+            CarDto carDto = new CarDto();
+            carDto.CarId = car.CarId;
+            carDto.CarName = car.CarName;
+            carDto.BookingStatus = car.BookingStatus;
+            carDto.Method = "Post";
+            string serializedData = JsonConvert.SerializeObject(carDto);
+            await _producer.WriteMessage(serializedData);
+            return Ok(true);
         }
+        [HttpDelete]
+        public async Task<ActionResult> Delete(int id)
+        {
+
+            DeleteDto deleteDto = new DeleteDto();
+            deleteDto.Id = id;
+            deleteDto.Method = "Delete";
+            string serializedData = JsonConvert.SerializeObject(deleteDto);
+            await _producer.WriteMessage(serializedData);
+            return Ok(true);
+
+        }
+        [HttpPut]
+        public async Task<ActionResult> Put([FromBody] CarDetails car)
+        {
+            CarDto carDto = new CarDto();
+            carDto.CarId = car.CarId;
+            carDto.CarName = car.CarName;
+            carDto.BookingStatus = car.BookingStatus;
+            carDto.Method = "Put";
+            string serializedData = JsonConvert.SerializeObject(carDto);
+            await _producer.WriteMessage(serializedData);
+            return Ok(true);
+        }
+
+
     }
 }
