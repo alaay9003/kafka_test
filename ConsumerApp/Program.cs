@@ -13,12 +13,16 @@ var consumerConfig = new ConsumerConfig();
 builder.Configuration.Bind("consumer", consumerConfig);
 builder.Services.AddSingleton<ConsumerConfig>(consumerConfig);
 
+
 builder.Services.AddTransient<IConsumerService, ConsumerService>();
+builder.Services.AddSingleton<BackgroundService, ConsumerTest>();
+//builder.Services.AddHostedService<ConsumerTest>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 
 var Connection = builder.Configuration.GetConnectionString("DefaultConnection");

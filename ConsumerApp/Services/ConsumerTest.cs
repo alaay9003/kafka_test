@@ -1,19 +1,13 @@
 ﻿using Confluent.Kafka;
+using ConsumerApp.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ConsumerApp.Services
 {
-    public class ConsumerService : IConsumerService
+    public class ConsumerTest : BackgroundService
     {
-        /*
-                private ConsumerConfig _configuration;
-                private readonly IConfiguration _config;*/
-        public ConsumerService()
-        {
-            /*            _configuration = configuration;
-                        _config = config;*/
-        }
-
-        public string GetMessage()
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var config = new ConsumerConfig
             {
@@ -24,12 +18,13 @@ namespace ConsumerApp.Services
             using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
             {
                 consumer.Subscribe("testdata");
+
                 while (true)
                 {
                     var bookingDetails = consumer.Consume();
-                    Console.WriteLine(bookingDetails.Message.Value);
-                    return bookingDetails.Message.Value;
+                    Debug.WriteLine(bookingDetails.Message.Value);
                 }
+
             }
         }
 
