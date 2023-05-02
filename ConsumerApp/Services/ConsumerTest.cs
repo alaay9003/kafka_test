@@ -56,7 +56,7 @@ namespace ConsumerApp.Services
                 {
                     var bookingDetails = consumer.Consume();
                     var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
-                    _consumer.carDetails(order)
+                    _consumer.carDetails(order);
                 }
 
             }
