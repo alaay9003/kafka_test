@@ -1,8 +1,10 @@
 ﻿
+using kafka_test.Models;
+
 namespace ConsumerApp.Services
 {
     public interface IConsumerService
     {
-        string GetMessage();
+        Task carDetails(CarDto car);  
     }
 }

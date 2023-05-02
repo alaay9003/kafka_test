@@ -8,41 +8,15 @@ using System.Text.Json;
 
 namespace ConsumerApp.Services
 {
-    public class ConsumerTest : BackgroundService
+    public class ConsumerTest : IHostedService
     {
-        private readonly ApplicationDbContext _dbContext;
-        public ConsumerTest(ApplicationDbContext dbContext)
+        private readonly IConsumerService _consumer;
+        public ConsumerTest(IConsumerService consumer)
         {
-            _dbContext = dbContext;
+            _consumer = consumer;
         }
 
-        /*        public Task StartAsync(CancellationToken cancellationToken)
-                {
-                    var config = new ConsumerConfig
-                    {
-                        GroupId = "gid-consumers",
-                        BootstrapServers = "localhost:9092"
-                    };
-
-                    using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
-                    {
-                        consumer.Subscribe("testdata");
-
-                        while (true)
-                        {
-                            var bookingDetails = consumer.Consume();
-                            var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
-                            Debug.WriteLine(order);
-                        }
-
-                    }
-                }*/
-
-        /*        public Task StopAsync(CancellationToken cancellationToken)
-                {
-                    return Task.CompletedTask;
-                }*/
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             var config = new ConsumerConfig
             {
@@ -57,12 +31,44 @@ namespace ConsumerApp.Services
                 while (true)
                 {
                     var bookingDetails = consumer.Consume();
-                    var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value); ;
-                    Debug.WriteLine(order.CarName);
+                    var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
+                    await _consumer.carDetails(order);
+                    Debug.WriteLine(bookingDetails.Message.Value);
                 }
 
             }
         }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+       /* protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            var config = new ConsumerConfig
+            {
+                GroupId = "gid-consumers",
+                BootstrapServers = "localhost:9092"
+            };
+
+            using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
+            {
+                consumer.Subscribe("testdata");
+
+                while (true)
+                {
+                    var bookingDetails = consumer.Consume();
+                    var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
+                    switch(order.Method)
+                    {
+                       case "Post" :
+                            Debug.WriteLine(order.CarName);
+                       break;
+                    }
+                }
+
+            }
+        }*/
 
     }
 }

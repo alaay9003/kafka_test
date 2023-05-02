@@ -14,9 +14,9 @@ builder.Configuration.Bind("consumer", consumerConfig);
 builder.Services.AddSingleton<ConsumerConfig>(consumerConfig);
 
 
-//builder.Services.AddTransient<IConsumerService, ConsumerService>();
-//builder.Services.AddTransient<IHostedService, ConsumerTest>();
-builder.Services.AddHostedService<ConsumerTest>();
+builder.Services.AddTransient<IConsumerService, ConsumerService>();
+builder.Services.AddSingleton<IHostedService, ConsumerTest>();
+//builder.Services.AddHostedService<ConsumerTest>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen();
 
 var Connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(Connection)
+    options.UseSqlServer(Connection), ServiceLifetime.Scoped
 );
 
 
