@@ -14,9 +14,9 @@ builder.Configuration.Bind("consumer", consumerConfig);
 builder.Services.AddSingleton<ConsumerConfig>(consumerConfig);
 
 
-builder.Services.AddTransient<IConsumerService, ConsumerService>();
-builder.Services.AddSingleton<BackgroundService, ConsumerTest>();
-//builder.Services.AddHostedService<ConsumerTest>();
+//builder.Services.AddTransient<IConsumerService, ConsumerService>();
+//builder.Services.AddTransient<IHostedService, ConsumerTest>();
+builder.Services.AddHostedService<ConsumerTest>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
