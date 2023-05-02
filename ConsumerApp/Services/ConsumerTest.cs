@@ -15,6 +15,11 @@ namespace ConsumerApp.Services
         {
             _consumer = consumer;
         }
+/*        private readonly ApplicationDbContext _dbContext;
+        public ConsumerTest(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }*/
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -33,7 +38,7 @@ namespace ConsumerApp.Services
                     var bookingDetails = consumer.Consume();
                     var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
                     await _consumer.carDetails(order);
-                    Debug.WriteLine(bookingDetails.Message.Value);
+                    //Debug.WriteLine(bookingDetails.Message.Value);
                 }
 
             }
