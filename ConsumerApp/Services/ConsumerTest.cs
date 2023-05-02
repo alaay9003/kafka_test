@@ -1,14 +1,11 @@
 ﻿using Confluent.Kafka;
-using ConsumerApp.Controllers;
-using ConsumerApp.Models;
 using kafka_test.Models;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;
 
 namespace ConsumerApp.Services
 {
-    public class ConsumerTest : IHostedService
+    public class ConsumerTest : BackgroundService
     {
         private readonly IConsumerService _consumer;
         public ConsumerTest(IConsumerService consumer)
@@ -16,7 +13,7 @@ namespace ConsumerApp.Services
             _consumer = consumer;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+/*        public async Task StartAsync(CancellationToken cancellationToken)
         {
             var config = new ConsumerConfig
             {
@@ -42,8 +39,8 @@ namespace ConsumerApp.Services
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
-        }
-       /* protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        }*/
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var config = new ConsumerConfig
             {
@@ -59,16 +56,10 @@ namespace ConsumerApp.Services
                 {
                     var bookingDetails = consumer.Consume();
                     var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
-                    switch(order.Method)
-                    {
-                       case "Post" :
-                            Debug.WriteLine(order.CarName);
-                       break;
-                    }
                 }
 
             }
-        }*/
+        }
 
     }
 }
