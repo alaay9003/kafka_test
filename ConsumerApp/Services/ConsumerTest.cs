@@ -40,6 +40,14 @@ namespace ConsumerApp.Services
                                     case "Post":
                                         await _consumer.postMessage(order);
                                         break;
+                                    case "Delete":
+                                        //Debug.WriteLine(order.CarId);
+                                        await _consumer.deleteMessage(order.CarId);
+                                        break;
+                                    case "Put":
+                                        //Debug.WriteLine(order.CarId);
+                                        await _consumer.updateMessage(order);
+                                        break;
                                     default:
                                         break;
                                 }

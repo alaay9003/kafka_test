@@ -7,5 +7,6 @@ namespace ConsumerApp.Services
     {
         Task postMessage(CarDto car);
         Task deleteMessage(int carId);
+        Task updateMessage(CarDto car);
     }
 }

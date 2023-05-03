@@ -1,8 +1,10 @@
 ﻿namespace kafka_test.Models
 {
-    public class DeleteDto
+    public class updateDto
     {
         public int CarId { get; set; }
+        public string CarName { get; set; }
+        public string BookingStatus { get; set; }
         public string Method { get; set; }
     }
 }

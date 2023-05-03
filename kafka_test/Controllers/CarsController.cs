@@ -37,7 +37,7 @@ namespace kafka_test.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             DeleteDto deleteDto = new DeleteDto();
-            deleteDto.Id = id;
+            deleteDto.CarId = id;
             deleteDto.Method = "Delete";
             string serializedData = JsonConvert.SerializeObject(deleteDto);
             await _producer.WriteMessage(serializedData);
@@ -45,11 +45,12 @@ namespace kafka_test.Controllers
 
         }
         [HttpPut]
-        public async Task<ActionResult> Put([FromBody] CarDetails car)
+        public async Task<ActionResult> Put(int id,[FromBody] CarDetails car)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            CarDto carDto = new CarDto();
+            updateDto carDto = new updateDto();
+            carDto.CarId = id; 
             carDto.CarName = car.CarName;
             carDto.BookingStatus = car.BookingStatus;
             carDto.Method = "Put";
