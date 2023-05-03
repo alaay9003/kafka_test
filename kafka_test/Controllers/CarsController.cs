@@ -19,40 +19,43 @@ namespace kafka_test.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Get([FromBody] CarDetails car)
+        public async Task<ActionResult> Post([FromBody] CarDetails car)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
             CarDto carDto = new CarDto();
-            carDto.CarId = car.CarId;
             carDto.CarName = car.CarName;
             carDto.BookingStatus = car.BookingStatus;
             carDto.Method = "Post";
             string serializedData = JsonConvert.SerializeObject(carDto);
             await _producer.WriteMessage(serializedData);
-            return Ok(true);
+            return Ok(serializedData);
         }
         [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
-
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             DeleteDto deleteDto = new DeleteDto();
             deleteDto.Id = id;
             deleteDto.Method = "Delete";
             string serializedData = JsonConvert.SerializeObject(deleteDto);
             await _producer.WriteMessage(serializedData);
-            return Ok(true);
+            return Ok(serializedData);
 
         }
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] CarDetails car)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             CarDto carDto = new CarDto();
-            carDto.CarId = car.CarId;
             carDto.CarName = car.CarName;
             carDto.BookingStatus = car.BookingStatus;
             carDto.Method = "Put";
             string serializedData = JsonConvert.SerializeObject(carDto);
             await _producer.WriteMessage(serializedData);
-            return Ok(true);
+            return Ok(serializedData);
         }
 
 

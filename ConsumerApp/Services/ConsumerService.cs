@@ -11,7 +11,13 @@ namespace ConsumerApp.Services
         {
             _dbContext = dbContext;
         }
-        public async Task carDetails(CarDto car)
+
+        public async Task deleteMessage(int carId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task postMessage(CarDto car)
         {
             var carObject=new CarDetail
                 {

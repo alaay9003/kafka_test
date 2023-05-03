@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kafka_test", "kafka_test\kafka_test.csproj", "{E33F5E1D-F621-4053-A21D-E8004198639A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kafka_test", "kafka_test\kafka_test.csproj", "{E33F5E1D-F621-4053-A21D-E8004198639A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerApp", "ConsumerApp\ConsumerApp.csproj", "{320A140C-12EF-473F-B8F6-F11B1A62E0BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsumerApp", "ConsumerApp\ConsumerApp.csproj", "{320A140C-12EF-473F-B8F6-F11B1A62E0BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

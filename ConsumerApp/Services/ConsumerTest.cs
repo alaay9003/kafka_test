@@ -15,65 +15,93 @@ namespace ConsumerApp.Services
         {
             _consumer = consumer;
         }
-/*        private readonly ApplicationDbContext _dbContext;
-        public ConsumerTest(ApplicationDbContext dbContext)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _dbContext = dbContext;
-        }*/
-
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            var config = new ConsumerConfig
+            Task.Run(async () =>
             {
-                GroupId = "gid-consumers",
-                BootstrapServers = "localhost:9092"
-            };
-
-            using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
-            {
-                consumer.Subscribe("testdata");
-
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    var bookingDetails = consumer.Consume();
-                    var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
-                    await _consumer.carDetails(order);
-                    //Debug.WriteLine(bookingDetails.Message.Value);
+                    try
+                    {
+                    var config = new ConsumerConfig
+                    {
+                        GroupId = "gid-consumers",
+                        BootstrapServers = "localhost:9092"
+                    };
+                    using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
+                    {
+                        consumer.Subscribe("testdata");
+                        while (true)
+                        {
+                            var bookingDetails = consumer.Consume();
+                            var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
+                            switch (order.Method)
+                                {
+                                    case "Post":
+                                        await _consumer.postMessage(order);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            
+                            //Debug.WriteLine(bookingDetails.Message.Value);
+                        }
+                    }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Ignore cancellation exceptions.
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error consuming message: {ex.Message}");
+                    }
                 }
+            }, cancellationToken);
 
-            }
+            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            throw new NotImplementedException();
         }
-       /* protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            var config = new ConsumerConfig
-            {
-                GroupId = "gid-consumers",
-                BootstrapServers = "localhost:9092"
-            };
-
-            using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
-            {
-                consumer.Subscribe("testdata");
-
-                while (true)
-                {
-                    var bookingDetails = consumer.Consume();
-                    var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
-                    switch(order.Method)
-                    {
-                       case "Post" :
-                            Debug.WriteLine(order.CarName);
-                       break;
-                    }
-                }
-
-            }
-        }*/
-
     }
 }
+
+
+
+/*private readonly string topic = "test";
+private readonly string groupId = "test_group";
+private readonly string bootstrapServers = "localhost:9092";*/
+
+
+
+
+
+/* protected override Task ExecuteAsync(CancellationToken stoppingToken)
+ {
+     var config = new ConsumerConfig
+     {
+         GroupId = "gid-consumers",
+         BootstrapServers = "localhost:9092"
+     };
+
+     using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
+     {
+         consumer.Subscribe("testdata");
+
+         while (true)
+         {
+             var bookingDetails = consumer.Consume();
+             var order = JsonSerializer.Deserialize<CarDto>(bookingDetails.Message.Value);
+             switch(order.Method)
+             {
+                case "Post" :
+                     Debug.WriteLine(order.CarName);
+                break;
+             }
+         }
+
+     }
+ }*/

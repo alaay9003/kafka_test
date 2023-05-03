@@ -5,6 +5,7 @@ namespace ConsumerApp.Services
 {
     public interface IConsumerService
     {
-        Task carDetails(CarDto car);  
+        Task postMessage(CarDto car);
+        Task deleteMessage(int carId);
     }
 }

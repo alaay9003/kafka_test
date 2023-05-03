@@ -1,7 +1,10 @@
 ﻿using Confluent.Kafka;
+using ConsumerApp.Models;
 using ConsumerApp.Services;
+using kafka_test.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConsumerApp.Controllers
 {
@@ -9,32 +12,30 @@ namespace ConsumerApp.Controllers
     [ApiController]
     public class ConsumersController : ControllerBase
     {
-        /*        private readonly IConsumerService _consumer;
+        private readonly ApplicationDbContext _context;
 
-                public ConsumersController(IConsumerService consumer)
-                {
-                    _consumer = consumer;
-                }*/
-        [HttpGet]
-        public string getAll()
+        public ConsumersController(ApplicationDbContext context)
         {
-            var config = new ConsumerConfig
-            {
-                GroupId = "gid-consumers",
-                BootstrapServers = "localhost:9092"
-            };
+            _context = context;
+        }
 
-            using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
-            {
-                consumer.Subscribe("testdata");
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _context.CarDetails.ToListAsync();
+            if(result.Count == 0)
+                return NotFound("There is no message to consume");
+            return Ok(result);
 
-                while (true)
-                {
-                    var bookingDetails = consumer.Consume();
-                    return bookingDetails.Message.Value;
-                }
+        }
+        [HttpGet("id")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _context.CarDetails.FirstOrDefaultAsync(x => x.Id == id);
+            if(result == null)
+                return NotFound($"There is no message With Id {id}");
 
-            }
+            return Ok(result);
         }
     }
 }
